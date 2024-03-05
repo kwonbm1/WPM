@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Word Typing Counter</title>
+    <script>
+      function startCounter() {
+        var length = document.getElementById("length").value;
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/calculate_wpm", true);
+        xhr.setRequestHeader(
+          "Content-Type",
+          "application/x-www-form-urlencoded"
+        );
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4) {
+            if (xhr.status == 200) {
+              var response = JSON.parse(xhr.responseText);
+              document.getElementById("word").textContent =
+                response.finalPhrase;
+              document.getElementById("wordCount").textContent =
+                "Word Count: " + response.wordCount;
+            } else {
+              alert("An error occurred: " + xhr.statusText);
+            }
+          }
+        };
+        xhr.send("length=" + length);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Word Typing Counter</h1>
+    <label for="length">Enter the number of words:</label>
+    <input type="number" id="length" name="length" required />
+    <button type="button" onclick="startCounter()">Start</button>
+
+    <div id="word"></div>
+    <p id="wordCount"></p>
+  </body>
+</html>
