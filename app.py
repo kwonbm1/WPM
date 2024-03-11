@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 import requests
 
@@ -25,12 +25,18 @@ def calculate_wpm():
             return jsonify({'finalPhrase': finalPhrase, 'wordCount': wordCount})
         except Exception as e:
             error_message = "An error occurred: {}".format(str(e))
-            return jsonify({'error': error_message}), 500
+            return render_template('error.html', error=error_message), 500
     else:
-        return jsonify({'error': 'Length parameter is missing'}), 400
+        return render_template('error.html', error='Length parameter is missing'), 400
+
+@app.route('/result')
+def result():
+    wpm = 100  
+    return render_template('results.html', wpm=wpm)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 

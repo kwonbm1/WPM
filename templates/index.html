@@ -22,6 +22,10 @@
               console.log("Parsed response: ", response);
               document.getElementById("word").textContent =
                 response.finalPhrase;
+
+              // Clear previous results
+              document.getElementById("textInput").value = "";
+              document.getElementById("result").innerText = "";
             } else {
               alert("An error occurred: " + xhr.statusText);
             }
@@ -29,6 +33,36 @@
         };
         console.log("Sending request...");
         xhr.send("length=" + length);
+      }
+
+      function testWPM() {
+        var textToTest = document.getElementById("textInput").value;
+        var originalText = document.getElementById("word").textContent;
+
+        var originalWords = originalText.split(/\s+/);
+        var testWords = textToTest.split(/\s+/);
+
+        var errorCount = 0;
+        for (var i = 0; i < originalWords.length; i++) {
+          if (originalWords[i] !== testWords[i]) {
+            errorCount++;
+          }
+        }
+
+        var wordCount = originalWords.length;
+        var accuracy = ((wordCount - errorCount) / wordCount) * 100;
+        var wpm = Math.round(wordCount / 5 / (1 / 60)); // Assuming 5 characters per word and 1 minute typing time
+
+        var result =
+          "Word Count: " +
+          wordCount +
+          ", Errors: " +
+          errorCount +
+          ", Accuracy: " +
+          accuracy.toFixed(2) +
+          "%, WPM: " +
+          wpm;
+        document.getElementById("result").innerText = result;
       }
     </script>
   </head>
@@ -39,6 +73,13 @@
     <button type="button" onclick="startCounter()">Start</button>
 
     <div id="word"></div>
-    <p id="wordCount"></p>
+    <textarea
+      id="textInput"
+      rows="4"
+      cols="50"
+      placeholder="Type the words here to test your typing speed"
+    ></textarea>
+    <button type="button" onclick="testWPM()">Test WPM</button>
+    <p id="result"></p>
   </body>
 </html>
